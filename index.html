@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>8.4v2</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  
   
   
   
@@ -13,30 +14,61 @@
 
 <body>
 
-  <div>
+<div>
 	<button id="game">Let's play a game</button>
 </div>
 
 <div>
-	<button id="button-paper">Paper</button>
+	<button data-move="paper" class='player-move' id="button-paper">Paper</button>
 </div>
 
 <div>
-	<button id="button-rock">Rock</button>
+	<button data-move="rock" class='player-move' id="button-rock">Rock</button>
 </div>
 <div>
-	<button id="button-scissors">Scissors</button>
+	<button data-move="scissors" class='player-move' id="button-scissors">Scissors</button>
 </div>
-<div id='output'></div>
-<div id='result'></div>
+
+	
+
+<div class="overlay" id="modal-overlay">
+  <div class="modal" id="Draw">
+		<a href="#" class="close">x</a>
+		<header>Result</header>
+		<div class="content">
+			<p>Draw!</p>
+		</div>
+	</div>
   
+	<div class="modal" id="playerWon">
+		<a href="#" class="close">x</a>
+		<header>Result</header>
+		<div class="content">
+			<p>Player won!</p>
+		</div>
+	</div>
+	<div class="modal" id="computerWon">
+		<a href="#" class="close">x</a>
+		<header>Result</header>
+		<div class="content">
+			<p>Computer won!</p>
+		</div>
+	</div>
+	<div class="modal" id="modal-three">
+		<a href="#" class="close">x</a>
+		<header>Modal three</header>
+		<div class="content">
+			<p>Dolor sit amet!</p>
+		</div>
+	</div>
+</div>
   
 
-    <script  src="js/index.js"></script>
+    
 
 
 
-
+<script  src="js/script.js"></script>
 </body>
 
 </html>

@@ -4,13 +4,16 @@ var newGame = document.getElementById("game");
 var output = document.getElementById("output");
 var result = document.getElementById("result");
 var buttons = document.getElementsByClassName('player-move');
-
+var score;
 var params={playerPoints: 0,
             computerPoints: 0,
             roundsToPlay: 0,
             roundsPlayed: 0,
-            progress:{}
+            roundResult: 0,
            };
+
+var progress= new Array();
+
 var choice ={paper: 1,
              stone: 2,
              scissors: 3
@@ -28,17 +31,29 @@ newGame.addEventListener("click", function() {
   params.roundsPlayed = 0;
   params.playerPoints = 0;
   params.computerPoints = 0;
-  output.innerHTML = "<br>";
+  
 });
 
 var playRound = function(playerMove) {
   
   var scriptDrawing = Math.floor(Math.random() * 3) + 1;
+  if (scriptDrawing === 1){
+    var computerMove = "paper";
+  } else if (scriptDrawing === 2){
+      var computerMove = "rock";
+    } else {
+      var computerMove ="scissors"
+    }
+  
   compare(playerMove, scriptDrawing);
   params.roundsPlayed++;
-  params.proggres.push({playerMove:playerMove, scriptDrawing:scriptDrawing });
- 
-  output.innerHTML += params.roundsPlayed +"<br>";
+  progress.push({playerMove: playerMove,
+                computerMove: computerMove,
+                roundsPlayed: params.roundsPlayed,
+                roundResult: score,
+                playerPoints:params.playerPoints,
+                computerPoints:params.computerPoints
+                });
   if (params.roundsPlayed === params.roundsToPlay) {
    
     if (params.playerPoints > params.computerPoints) {
@@ -54,7 +69,7 @@ var playRound = function(playerMove) {
     
     
     setButtonsDisabledState(true);
-    result.innerHTML = params.progress;
+    tableCreate();
     
     
   }
@@ -74,26 +89,26 @@ var attributeButtons = function(){
 
 var compare = function(playerMove, scriptDrawing) {
     if (playerMove === ('paper') && scriptDrawing === (choice.stone)) {
-    output.innerHTML += "Paper beats Rock - player win!  <br>";
     params.playerPoints++;
+    return score = "Paper beats Rock - player win!"
   } else if (playerMove === ('rock') && scriptDrawing === (choice.paper)) {
-    output.innerHTML += "Paper beats Rock - computer win! <br>";
     params.computerPoints++;
+    return score = "Paper beats Rock - computer win!";
   } else if (playerMove === ('rock') && scriptDrawing === (choice.scissors)) {
-    output.innerHTML += "Rock beats Scissors - player win! <br>";
     params.playerPoints++;
+    return score = "Rock beats Scissors - player win!";  
   } else if (playerMove === ('scissors') && scriptDrawing === (choice.stone)) {
-    output.innerHTML += "Rock beats Scissors - computer win <br>";
     params.computerPoints++;
+    return score = "Rock beats Scissors - computer win ";    
   } else if (playerMove === ('scissors') && scriptDrawing === (choice.paper)) {
-    output.innerHTML += "Scissors beats Paper - player win! <br>";
     params.playerPoints++;
+    return score = "Scissors beats Paper - player win! ";
   } else if (playerMove === ('paper') && scriptDrawing === (choice.scissors)) {
-    output.innerHTML += "Scissors beats Paper - computer win! <br>";
     params.computerPoints++;
+    return score = "Scissors beats Paper - computer win! ";  
   }
     else{
-    output.innerHTML += " Draw <br>";
+    return score = " Draw";
   }
 };
 attributeButtons();
@@ -107,6 +122,7 @@ var hideModals=function() {
 } 
   var showModal = function(outcome){
     hideModals();
+
     document.querySelector('#modal-overlay').classList.add('show');
     document.querySelector('#' + outcome).classList.add('show');
   };
@@ -135,4 +151,68 @@ var hideModals=function() {
       event.stopPropagation();
     });
   }
+
+function tableCreate() {
+  var body = document.getElementsByTagName('body')[0];
+  var tbl = document.createElement('table');
+  tbl.style.width = '100%';
+  tbl.setAttribute('border', '1');
+  var tbdy = document.createElement('tbody');
+  for (var i = 0; i < params.roundsToPlay; i++) {
+    var tr = document.createElement('tr');
+    {
+      
+        var td = document.createElement('td');
+        td.innerHTML=(progress[i].roundsPlayed);
+        var td2 = document.createElement('td');
+        td2.innerHTML=(progress[i].playerMove);
+        var td3 = document.createElement('td');
+        td3.innerHTML=(progress[i].computerMove);
+        var td4 = document.createElement('td');
+        td4.innerHTML=(progress[i].roundResult);
+        var td5 = document.createElement('td');
+        td5.innerHTML=(progress[i].playerPoints + ':' + progress[i].computerPoints);
+
+
+
+        td.appendChild(document.createTextNode('\u0020'))
+        td2.appendChild(document.createTextNode('\u0020'))
+        td3.appendChild(document.createTextNode('\u0020'))
+        td4.appendChild(document.createTextNode('\u0020'))
+        td5.appendChild(document.createTextNode('\u0020'))
+        
+        tr.appendChild(td)
+        tr.appendChild(td2)
+        tr.appendChild(td3)
+        tr.appendChild(td4)
+        tr.appendChild(td5)
+      }
+    
+    tbdy.appendChild(tr);
+  }
+  tbl.appendChild(tbdy);
+  body.appendChild(tbl)
+}
+
+/*
+function myTable (){
+  var x = document.createElement("TABLE");
+  createTHead();
+  for (var i = 0; i < params.roundsToPlay; i++) {
+    insertRow()
+      createCaption(progress[i].roundsPlayed);
+      createCaption(progress[i].playerPoints);
+      createCaption(progress[i].computerPoints);
+      createCaption()
+    }
+
+
+}
+
+
+*/
+
+
+
+
 
