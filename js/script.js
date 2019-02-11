@@ -1,3 +1,14 @@
+/* jesli chodzi o this.getAttribute - https://developer.mozilla.org/en-US/docs/Web/API/Event/target//ok
+- zamiast if (isNaN(params.roundsToPlay) === true) { wystarczy samo if (isNaN(params.roundsToPlay))
+ {, wyrazenie wewnatrz jest true samo w sobie //ok
+- zamiast progress = new Array(); wystarczy progress = [] //ok
+
+- co do tabeli
+* wydziel osobna funkcje która tworzy jedna komórkę
+* wydziel osobną funkcję która tworzy nagłówki
+* wydziel osobna funkcje która tworzy ciało tabeli
+* nazwij zmienne bardziej odpowiednio (a nie td2 itd)
+*/
 "use strict";
 var newGame = document.getElementById("game");
 var output = document.getElementById("output");
@@ -19,10 +30,10 @@ var choice = {
     rock: 'rock',
     scissors: 'scissors'
 };
-var attributeButtons = function(event) {
+var attributeButtons = function() {
     for (var i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", function() {
-            var dataMove = this.getAttribute('data-move');
+        buttons[i].addEventListener("click", function(event) {
+            var dataMove = event.target.getAttribute('data-move');
             playRound(dataMove);
         });
     };
@@ -34,7 +45,7 @@ var setButtonsDisabledState = function(isDisabled) {
 }
 newGame.addEventListener("click", function() {
     params.roundsToPlay = parseInt(window.prompt("ile rund?"));
-    if (isNaN(params.roundsToPlay) === true) {
+    if (isNaN(params.roundsToPlay)) {
         alert('error');
         return
     }
@@ -42,7 +53,7 @@ newGame.addEventListener("click", function() {
     params.roundsPlayed = 0;
     params.playerPoints = 0;
     params.computerPoints = 0;
-    progress = new Array();
+    progress = [];
 });
 var playRound = function(playerMove) {
     var computerMove = choice[Object.keys(choice)[Math.floor(Math.random() * Object.keys(choice).length)]];
@@ -124,32 +135,42 @@ for (var i = 0; i < modals.length; i++) {
     });
 }
 
+function createCell(data) {
+    var cell = document.createElement('td');
+    cell.innerHTML = data;
+    cell.style.width = '80px';
+    return cell;
+};
+
+function createHeader() {
+    var thead = document.createElement('thead');
+    thead.appendChild(createCell('Rounds played'));
+    thead.appendChild(createCell('player move'));
+    thead.appendChild(createCell('computer move'));
+    thead.appendChild(createCell('round result'));
+    thead.appendChild(createCell('game result after round'));
+    return thead;
+};
+
+function createBody() {
+    var tbody = document.createElement('tbody');
+    progress.forEach(function(roundObj) {
+        var row = document.createElement('row');
+        row.appendChild(createCell(roundObj.roundsPlayed));
+        row.appendChild(createCell(roundObj.playerMove));
+        row.appendChild(createCell(roundObj.computerMove));
+        row.appendChild(createCell(roundObj.roundResult));
+        row.appendChild(createCell(roundObj.playerPoints + ":" + roundObj.computerPoints));
+        tbody.appendChild(row);
+    })
+    return tbody;
+};
+
 function tableCreate(modalID) {
     var modal = document.getElementById(modalID);
     var table = document.createElement('table');
-    var tbody = document.createElement('tbody');
-    var thead = document.createElement('thead');
-    for (var i = 0; i < params.roundsToPlay; i++) {
-        var tr = document.createElement('tr'); {
-            var td = document.createElement('td');
-            td.innerHTML = (progress[i].roundsPlayed);
-            var td2 = document.createElement('td');
-            td2.innerHTML = (progress[i].playerMove);
-            var td3 = document.createElement('td');
-            td3.innerHTML = (progress[i].computerMove);
-            var td4 = document.createElement('td');
-            td4.innerHTML = (progress[i].roundResult);
-            var td5 = document.createElement('td');
-            td5.innerHTML = (progress[i].playerPoints + ':' + progress[i].computerPoints);
-            tr.appendChild(td)
-            tr.appendChild(td2)
-            tr.appendChild(td3)
-            tr.appendChild(td4)
-            tr.appendChild(td5)
-        }
-        tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
+    table.appendChild(createHeader());
+    table.appendChild(createBody());
     modal.appendChild(table);
     table.classList.add('table');
 };
